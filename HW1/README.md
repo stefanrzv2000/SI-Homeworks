@@ -88,13 +88,17 @@ def dec_cfb(cph_text,key,iv, is_string = False):
 def enc_aes(message: Union[str, bytes] ,key = _default_key):
 
 def dec_aes(cph_text, key = _default_key, is_string = False):
-    
+# _default_key este acel K3 pe care il vor avea atat server-ul, cat si clientii
 ```
 
 Functiile care privesc modurile cbc si cfb au urmatoarea structura:
 1. Impart mesajul in blocuri apeland functia 
-'''py
+```py
 def _get_blocks(content):
-'''
+```
 Care realizeaza si padding-ul. Padding-ul este realizat dupa metoda <a href=https://en.wikipedia.org/wiki/Padding_(cryptography)#PKCS#5_and_PKCS#7>PKCS#7</a>, adaugand p copii ale byte-ului cu valoare p la final, unde p este lungimea necesara a padding-ului (intre 1 si 16)
-2. Intr-o bucla se repeta algoritmul care cripteaza/decripteaza fiecare bloc, actualizand la fiecare iteratie iv-ul pentru iteratia urmatoare
+2. Intr-o bucla se repeta algoritmul care cripteaza/decripteaza fiecare bloc, actualizand la fiecare iteratie iv-ul pentru iteratia urmatoare conform diagramelor din curs.
+
+In ```key_manager``` cheile si vectorii de initializare se genereaza folosind functia ```secrets.token_bytes(len: int)```
+
+Comunicarea intre clienti si server se realizeaza prin intermediul socketilor disponibili in mod direct in python. Aceasta are structura: Welcome message -> (client asks -> server answers)*n
