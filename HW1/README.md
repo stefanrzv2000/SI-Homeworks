@@ -72,3 +72,29 @@ Message from server: alles gut
 terminal client1>> end
 terminal client2>> end
 ```
+
+## Detalii implementare
+
+Functiile ce criptare si decriptare sunt
+```py
+def enc_cbc(message,key,iv):
+
+def enc_cfb(message,key,iv):
+
+def dec_cbc(cph_text,key,iv, is_string = False):
+
+def dec_cfb(cph_text,key,iv, is_string = False):
+
+def enc_aes(message: Union[str, bytes] ,key = _default_key):
+
+def dec_aes(cph_text, key = _default_key, is_string = False):
+    
+```
+
+Functiile care privesc modurile cbc si cfb au urmatoarea structura:
+1. Impart mesajul in blocuri apeland functia 
+'''py
+def _get_blocks(content):
+'''
+Care realizeaza si padding-ul. Padding-ul este realizat dupa metoda <a href=https://en.wikipedia.org/wiki/Padding_(cryptography)#PKCS#5_and_PKCS#7>PKCS#7</a>, adaugand p copii ale byte-ului cu valoare p la final, unde p este lungimea necesara a padding-ului (intre 1 si 16)
+2. Intr-o bucla se repeta algoritmul care cripteaza/decripteaza fiecare bloc, actualizand la fiecare iteratie iv-ul pentru iteratia urmatoare

@@ -54,19 +54,21 @@ def receive_key_iv(sock, mode):
 
     sock.sendall(b'get key')
     cr_key = sock.recv(128)
+    print("Received key from key_manager\n")
     # debug_msg("cr_key")
     # print(cr_key)
     # print(len(cr_key))
 
     sock.sendall(b'get iv')
     cr_iv = sock.recv(128)
+    print("Received init_vec from key_manager\n")
     # debug_msg("cr_iv")
     # print(cr_iv)
     # print(len(cr_iv))
 
     trans_key = mycrypt.dec_aes(cr_key)
     trans_iv = mycrypt.dec_aes(cr_iv)
-    debug_msg("le-am decriptat")
+    # debug_msg("le-am decriptat")
 
     enc_func = mycrypt.enc_cbc if mode is 'cbc' else mycrypt.enc_cfb
     dec_func = mycrypt.dec_cbc if mode is 'cbc' else mycrypt.dec_cfb
@@ -74,6 +76,7 @@ def receive_key_iv(sock, mode):
     trans_dec = lambda x: dec_func(x,trans_key,trans_iv)
 
     confirm = trans_enc(mycrypt.confirmation_message)
+    print("Confirmation sent to the server, waiting response\n")
 
     sock.sendall(confirm)
     ans = sock.recv(128)
@@ -85,7 +88,7 @@ def upload_file(confirm_sock):
     us = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     us.connect((TRANS_HOST,TRANS_PORT))
 
-    print("Successfully connected to peer")
+    print("Successfully connected to peer\n")
     f = None
     while f is None:
         try:
@@ -107,11 +110,14 @@ def upload_file(confirm_sock):
     us.sendall(enc_enc_size)
     confirm = us.recv(128)
     if confirm == b'no':
-        print("peer refused the file")
+        print("peer refused the file\n")
         return -1
+    else:
+        print("Peer accepted the file\n")
 
     us.sendall(enc_file)
     confirm_sock.sendall(bytes(f"size {dec_size}",'ascii'))
+    print("File sent to peer\n")
 
     return dec_size
 
@@ -122,6 +128,7 @@ def download_file(confirm_sock):
     ds.listen(1)
     confirm_sock.sendall(b'start')
     peer_s, peer_add = ds.accept()
+    print("Peer connected, waiting file\n")
 
     next_size_cr = peer_s.recv(128)
     next_size = int.from_bytes(trans_dec(next_size_cr),'big')
@@ -129,7 +136,7 @@ def download_file(confirm_sock):
     ans = input(f"The size of the encrypted file is {next_size} bytes\nDo you wish to continue? (y/n) ")
 
     if 'n' in ans or 'N' in ans:
-        print("Connection with peer aborted")
+        print("Connection with peer aborted\n")
         peer_s.sendall(b'no')
         peer_s.close()
         return -1
@@ -151,7 +158,7 @@ def download_file(confirm_sock):
     ds.close()
 
     dec_file = trans_dec(enc_file)
-    print("content of file:")
+    print("\ncontent of file:")
     try:
         if len(dec_file) <= 100:
             print(dec_file.decode('ascii'))
@@ -159,13 +166,14 @@ def download_file(confirm_sock):
             print(dec_file[:50].decode('ascii'))
             print("...")
             print(dec_file[-50:].decode('ascii'))
+        print("")
     except:
-        print("File is not ascii-encoded, cannot display preview")
+        print("File is not ascii-encoded, cannot display preview\n")
 
     f.write(dec_file)
     f.close()
 
-    print("Saved successfully")
+    print("File saved successfully\n")
 
     return len(dec_file)//16 + 1
 
@@ -175,19 +183,21 @@ def process_message(msg,sock):
 
     de_afisat = msg
 
-    debug_msg("Am primit mesajul " + msg)
+    # debug_msg("Am primit mesajul " + msg)
 
     if msg == 'cbc' or msg == 'cfb':
-        debug_msg("Incepem receive key iv")
+        # debug_msg("Incepem receive key iv")
         ans = receive_key_iv(sock,msg)
         if ans == b'start':
-            debug_msg("Am primit ans = start, incepem download")
+            #debug_msg("Am primit ans = start, incepem download")
+            print("Confirmation received, starting communication with peer\n")
             size = download_file(confirm_sock = sock)
             print("Message from server: " + sock.recv(128).decode('ascii'))
             sock.sendall(bytes(f"size {size}",'ascii'))
             de_afisat = sock.recv(128).decode('ascii')
         elif ans == b'send_data':
-            debug_msg("Am primit ans = send_data, incepem upload")
+            # debug_msg("Am primit ans = send_data, incepem upload")
+            print("Confirmation received, connecting to peer\n")
             size = upload_file(confirm_sock = sock)
             de_afisat = sock.recv(128).decode('ascii')
             
