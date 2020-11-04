@@ -1,4 +1,4 @@
-### Tema 1 - Key Manager server and client
+# Tema 1 - Key Manager server and client
 
 ## Prezentare
 
@@ -7,14 +7,14 @@ key_manager.py - server-ul care accepta conexiunile clientilor si le ofera chei/
 client.py - clientul care se conecteaza la key manager, cere cheie si apoi trimite sau primeste un fisier criptat</br>
 mycript.py - utilitar in care am scris functiile de criptare/decriptare CBC si CFB
 
-# Rulare
+### Rulare
 Pentru a rula, trebuie rulate in terminale separate:</br>
 Intai serverul cu comanda 
 ```python keymanager.py```, 
 apoi doi clienti cu comanda
 ```python client.py```
 
-# Parcursul complet al rularii va fi urmatorul:
+### Parcursul complet al rularii va fi urmatorul:
 1. Clientii se vor conecta automat la server si vor primi mesaje de conectare
 2. Comunicarea se va face prin introducerea de comenzi la linia de comanda
 3. Prima comanda trebuie sa exprime actiunea pe care o dorim. Aceasta poate fi ```send``` in cazul in care dorim ca clientul sa trimita date sau ```wait``` in cazul in care dorim sa asteptam sa ne trimita cineva un fisier.
