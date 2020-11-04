@@ -97,8 +97,15 @@ Functiile care privesc modurile cbc si cfb au urmatoarea structura:
 def _get_blocks(content):
 ```
 Care realizeaza si padding-ul. Padding-ul este realizat dupa metoda <a href=https://en.wikipedia.org/wiki/Padding_(cryptography)#PKCS#5_and_PKCS#7>PKCS#7</a>, adaugand p copii ale byte-ului cu valoare p la final, unde p este lungimea necesara a padding-ului (intre 1 si 16)
+</br>
+
 2. Intr-o bucla se repeta algoritmul care cripteaza/decripteaza fiecare bloc, actualizand la fiecare iteratie iv-ul pentru iteratia urmatoare conform diagramelor din curs.
 
 In ```key_manager``` cheile si vectorii de initializare se genereaza folosind functia ```secrets.token_bytes(len: int)```
 
-Comunicarea intre clienti si server se realizeaza prin intermediul socketilor disponibili in mod direct in python. Aceasta are structura: Welcome message -> (client asks -> server answers)*n
+Comunicarea intre clienti si server se realizeaza prin intermediul socketilor disponibili in mod direct in python. Aceasta are structura: Welcome message -> *(client asks -> server answers)
+
+Mesajul de confirmare care va fi criptat si trimis catre server este format dintr-un string concatenat cu un vector de bytes:
+```py
+confirmation_message = b'This message is to confirm key receival ' + bytes([10,100,200,15,17,19,5,4,3,2,1])
+```
