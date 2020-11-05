@@ -4,7 +4,7 @@ import threading
 import time
 import secrets
 
-HOST = '192.168.100.6' # Standard loopback interface address (localhost)
+HOST = '1127.0.0.1' # Standard loopback interface address (localhost)
 PORT = 65432           # Port to listen on (non-privileged ports are > 1023)
 
 buffer_size = 1<<16

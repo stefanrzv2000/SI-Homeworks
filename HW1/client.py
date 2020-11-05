@@ -1,10 +1,10 @@
 import socket
 import mycrypt
 
-SERVER_HOST = '192.168.100.6'   # The server's hostname or IP address
+SERVER_HOST = '127.0.0.1'   # The server's hostname or IP address
 SERVER_PORT = 65432             # The port used by the server
 
-TRANS_HOST = '192.168.100.6'
+TRANS_HOST = '127.0.0.1'
 TRANS_PORT = 65431
 
 trans_key = None
